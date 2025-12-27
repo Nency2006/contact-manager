@@ -1,23 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from 'react';
+import AddContact from './component/AddContact';
+
+import './style.css';
 
 function App() {
+  const [contacts, setcontacts] = useState([]);
+  const [editidex, seteditindex] = useState(null);
+  
+
+  useEffect(()=>{
+    localStorage.setItem("contacts", JSON.stringify(contacts));
+  },[contacts]);
+
+  const addName = (contact) => {
+    setcontacts([...contacts, contact])
+  }
+  
+  const updateindex = (contact) => {
+    if (editidex !== null) {
+        const updatedcontact = [...contacts];
+        updatedcontact[editidex] = contact;
+        setcontacts(updatedcontact);
+        seteditindex(null);
+    }
+};
+  const editcontact = (index) => {
+       seteditindex(index);
+    };
+  const deletecontact = (index) =>{
+    setcontacts(contacts.filter((_,i)=>i !== index));
+  }
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+
+      <AddContact addName={addName} contacts={contacts} updateindex={updateindex} editcontact={editcontact} deletecontact={deletecontact} editdata={editidex !== null ? contacts[editidex] : null} /> 
+      
+      
     </div>
   );
 }
